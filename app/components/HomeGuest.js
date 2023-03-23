@@ -10,7 +10,7 @@ function HomeGuest(props) {
   async function handleRegistration(event) {
     event.preventDefault()
     try {
-      await Axios.post("http://localhost:8080/register", { username, email, password })
+      await Axios.post("/register", { username, email, password })
       console.log("User was successfully created")
     } catch (error) {
       console.log("There was an error")
