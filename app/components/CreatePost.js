@@ -1,18 +1,22 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useContext } from "react"
 import Page from "./Page"
 import Axios from "axios"
 import { useNavigate } from "react-router-dom"
+
+// Import Context
+import DispatchContext from "../DispatchContext"
 
 function CreatePost(props) {
   const [title, setTitle] = useState()
   const [body, setBody] = useState()
   const navigate = useNavigate()
+  const appDispatch = useContext(DispatchContext)
 
   async function handleCreatePost(e) {
     e.preventDefault()
     try {
       const response = await Axios.post("/create-post", { title, body, token: localStorage.getItem("complexappToken") })
-      props.addFlashMessage("Congrats, you successfully create a post")
+      appDispatch({ type: "flashMessage", value: "You successfully create a post" })
       navigate(`/post/${response.data}`)
     } catch (err) {
       console.log("There was a problem creating post")

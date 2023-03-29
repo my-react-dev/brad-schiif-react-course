@@ -1,9 +1,13 @@
-import React, { useState } from "react"
+import React, { useState, useReducer } from "react"
 import ReactDOM from "react-dom/client"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import Axios from "axios"
 // Set Axios Base URL
 Axios.defaults.baseURL = "http://localhost:8080"
+
+// Import Context
+import StateContext from "./StateContext"
+import DispatchContext from "./DispatchContext"
 
 // My Components
 import Header from "./components/Header"
@@ -17,26 +21,40 @@ import ViewSinglePost from "./components/ViewSinglePost"
 import FlashMessages from "./components/FlashMessages"
 
 function Main() {
-  const [loggedIn, setLoggedin] = useState(Boolean(localStorage.getItem("complexappToken")))
-  // Add Flash message
-  const [flashMessages, setFlashMessages] = useState([])
-  function addFlashMessage(msg) {
-    setFlashMessages(prev => prev.concat(msg))
+  const InitialState = {
+    loggedIn: Boolean(localStorage.getItem("complexappToken")),
+    flashMessages: []
   }
 
+  function OurReducer(state, action) {
+    switch (action.type) {
+      case "login":
+        return { loggedIn: true, flashMessages: state.flashMessages }
+      case "logout":
+        return { loggedIn: false, flashMessages: state.flashMessages }
+      case "flashMessage":
+        return { loggedIn: state.loggedIn, flashMessages: state.flashMessages.concat(action.value) }
+    }
+  }
+  const [state, dispatch] = useReducer(OurReducer, InitialState)
+
   return (
-    <BrowserRouter>
-      <FlashMessages messages={flashMessages} />
-      <Header loggedIn={loggedIn} setLoggedin={setLoggedin} />
-      <Routes>
-        <Route path="/" element={loggedIn ? <Home /> : <HomeGuest />} />
-        <Route path="/about-us" element={<About />} />
-        <Route path="/create-post" element={<CreatePost addFlashMessage={addFlashMessage} />} />
-        <Route path="/post/:id" element={<ViewSinglePost />} />
-        <Route path="/terms" element={<Terms />} />
-      </Routes>
-      <Footer />
-    </BrowserRouter>
+    <StateContext.Provider value={state}>
+      <DispatchContext.Provider value={dispatch}>
+        <BrowserRouter>
+          <FlashMessages messages={state.flashMessages} />
+          <Header />
+          <Routes>
+            <Route path="/" element={state.loggedIn ? <Home /> : <HomeGuest />} />
+            <Route path="/about-us" element={<About />} />
+            <Route path="/create-post" element={<CreatePost />} />
+            <Route path="/post/:id" element={<ViewSinglePost />} />
+            <Route path="/terms" element={<Terms />} />
+          </Routes>
+          <Footer />
+        </BrowserRouter>
+      </DispatchContext.Provider>
+    </StateContext.Provider>
   )
 }
 
