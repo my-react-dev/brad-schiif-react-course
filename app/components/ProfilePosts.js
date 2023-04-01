@@ -13,7 +13,6 @@ function ProfilePosts() {
         const response = await Axios.get(`/profile/${username}/posts`)
         setPosts(response.data)
         setIsLoading(false)
-        console.log(response.data)
       } catch (err) {
         console.log(err)
       }
