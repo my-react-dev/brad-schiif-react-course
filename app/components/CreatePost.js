@@ -5,17 +5,19 @@ import { useNavigate } from "react-router-dom"
 
 // Import Context
 import DispatchContext from "../DispatchContext"
+import StateContext from "../StateContext"
 
 function CreatePost(props) {
   const [title, setTitle] = useState()
   const [body, setBody] = useState()
   const navigate = useNavigate()
   const appDispatch = useContext(DispatchContext)
+  const appState = useContext(StateContext)
 
   async function handleCreatePost(e) {
     e.preventDefault()
     try {
-      const response = await Axios.post("/create-post", { title, body, token: localStorage.getItem("complexappToken") })
+      const response = await Axios.post("/create-post", { title, body, token: appState.user.token })
       appDispatch({ type: "flashMessage", value: "You successfully create a post" })
       navigate(`/post/${response.data}`)
     } catch (err) {
