@@ -20,10 +20,15 @@
     "react-dom": "^18.2.0",
     "react-markdown": "^8.0.6",
     "react-router-dom": "^6.9.0",
+    "react-tooltip": "^5.10.4",
     "use-immer": "^0.8.1",
     "webpack": "^5.76.2",
     "webpack-cli": "^5.0.1",
     "webpack-dev-server": "^4.13.0",
     "yarn": "^1.22.19"
+  },
+  "devDependencies": {
+    "css-loader": "^6.7.3",
+    "style-loader": "^3.3.2"
   }
 }
