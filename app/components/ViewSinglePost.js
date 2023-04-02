@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react"
 import Page from "./Page"
 import Axios from "axios"
 import { useParams, Link } from "react-router-dom"
+import LoadingDotsicon from "./LoadingDotsicon"
 
 function ViewSinglePost() {
   const { id } = useParams()
@@ -9,9 +10,11 @@ function ViewSinglePost() {
   const [post, setPost] = useState()
 
   useEffect(() => {
+    const ourRequest = Axios.CancelToken.source()
+
     async function fetchSinglePost() {
       try {
-        const response = await Axios.get(`/post/${id}`)
+        const response = await Axios.get(`/post/${id}`, { cancelToken: ourRequest.token })
         setPost(response.data)
         setIsLoading(false)
       } catch (err) {
@@ -19,12 +22,15 @@ function ViewSinglePost() {
       }
     }
     fetchSinglePost()
+    return () => {
+      ourRequest.cancel()
+    }
   }, [])
 
   if (isLoading)
     return (
-      <Page title="Loading...">
-        <div>Loading Posts...</div>
+      <Page title="...">
+        <LoadingDotsicon />
       </Page>
     )
 

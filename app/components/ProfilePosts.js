@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import Axios from "axios"
 import { useParams, Link } from "react-router-dom"
+import LoadingDotsicon from "./LoadingDotsicon"
 
 function ProfilePosts() {
   const { username } = useParams()
@@ -8,9 +9,10 @@ function ProfilePosts() {
   const [posts, setPosts] = useState([])
 
   useEffect(() => {
+    const ourRequest = Axios.CancelToken.source()
     async function fetchProfilePosts() {
       try {
-        const response = await Axios.get(`/profile/${username}/posts`)
+        const response = await Axios.get(`/profile/${username}/posts`, { cancelToken: ourRequest.token })
         setPosts(response.data)
         setIsLoading(false)
       } catch (err) {
@@ -18,9 +20,12 @@ function ProfilePosts() {
       }
     }
     fetchProfilePosts()
+    return () => {
+      ourRequest.cancel()
+    }
   }, [])
 
-  if (isLoading) return <div>Loading posts...</div>
+  if (isLoading) return <LoadingDotsicon />
 
   return (
     <div className="list-group">
