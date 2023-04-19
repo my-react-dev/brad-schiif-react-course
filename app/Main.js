@@ -21,6 +21,8 @@ import CreatePost from "./components/CreatePost"
 import ViewSinglePost from "./components/ViewSinglePost"
 import FlashMessages from "./components/FlashMessages"
 import Profile from "./components/Profile"
+import EditPost from "./components/EditPost"
+// Import react markdown css
 import "react-tooltip/dist/react-tooltip.css"
 
 function Main() {
@@ -76,6 +78,7 @@ function Main() {
             <Route path="/about-us" element={<About />} />
             <Route path="/create-post" element={<CreatePost />} />
             <Route path="/post/:id" element={<ViewSinglePost />} />
+            <Route path="/post/:id/edit" element={<EditPost />} />
             <Route path="/terms" element={<Terms />} />
           </Routes>
           <Footer />
